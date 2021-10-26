@@ -1,10 +1,11 @@
-import './index.css';
+import Sidebar from "./components/Sidebar.js";
+import Map from "./components/Map.js";
 
 export default function App() {
   return (
-    <div className="App">
-      <h1>propagate</h1>
-      <p>coming soon</p>
+    <div id="app">
+      <Sidebar />
+      <Map />
     </div>
   );
 }
