@@ -1,6 +1,24 @@
 import { useState } from 'react';
 import mascot from "./../assets/mascot.svg";
 import plants from "./../plants.json";
+import home from "./../assets/home.svg";
+import add from "./../assets/add.svg";
+import settings from "./../assets/settings.svg";
+
+const Tabs = [
+  {
+    "name": "Home",
+    "img": home
+  },
+  {
+    "name": "Add",
+    "img": add
+  },
+  {
+    "name": "Settings",
+    "img": settings
+  }
+];
 
 const Sidebar = () => {
   const [activeTab, setActiveTab] = useState("plant");
@@ -15,7 +33,7 @@ const Sidebar = () => {
           <img src={mascot} alt="" />
         </header>
 
-        <div>
+        <div className="sidebar-content">
           <div className="garden-tabs">
             <button 
               className={activeTab === "plant" && "active"}
@@ -64,9 +82,13 @@ const Sidebar = () => {
         <footer>
           <nav>
             <ul>
-              <li>tab</li>
-              <li>tab</li>
-              <li>tab</li>
+              {Tabs.map((tab, idx) => 
+                <li key={idx}>
+                  <button>
+                    <img src={tab.img} alt={tab.name} />
+                  </button>
+                </li>
+              )}
             </ul>
           </nav>
         </footer>
