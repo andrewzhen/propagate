@@ -1,11 +1,23 @@
-import Sidebar from "./components/Sidebar.js";
-import Map from "./components/Map.js";
+import { useEffect, useState } from 'react';
+import Login from './components/Login';
+import Home from './components/Home';
 
-export default function App() {
+import firebase from './services/firebase';
+
+const App = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(user => setUser(user));
+  }, []);
+
+  console.log(user);
+
   return (
     <div id="app">
-      <Sidebar />
-      <Map />
+      {user ? <Home user={user} /> : <Login />}
     </div>
   );
 }
+
+export default App;

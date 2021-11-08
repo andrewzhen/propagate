@@ -72,8 +72,35 @@ body {
   align-items: center;
 }
 
+.login {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+}
+
 button {
   all: unset;
+  cursor: pointer;
+}
+
+#loginBtn {
+  color: $off-white;
+  background-color: $green;
+  padding: 1rem 2rem;
+  border-radius: $radius;
+}
+
+#logoutBtn {
+  position: absolute;
+  z-index: 10;
+  bottom: 2rem;
+  right: 2rem;
 }
 
 .sidebar {

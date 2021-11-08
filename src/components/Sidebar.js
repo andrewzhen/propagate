@@ -20,7 +20,7 @@ const Tabs = [
   }
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ name }) => {
   const [activeTab, setActiveTab] = useState("plant");
   const [numPlants, setNumPlants] = useState(0);
   const [numProps, setNumProps] = useState(0);
@@ -29,28 +29,28 @@ const Sidebar = () => {
     <main>
       <div className="sidebar">
         <header>
-          <h1>Andrew's Garden</h1>
+          <h1>{name}'s Garden</h1>
           <img src={mascot} alt="" />
         </header>
 
         <div className="sidebar-content">
           <div className="garden-tabs">
             <button 
-              className={activeTab === "plant" && "active"}
+              className={activeTab === "plant" ? "active" : null}
               onClick={() => setActiveTab("plant")}
             >
               <span>{numPlants}</span> Plant{numPlants !== 1 && "s"}
             </button>
 
             <button 
-              className={activeTab === "propagation" && "active"}
+              className={activeTab === "propagation" ? "active" : null}
               onClick={() => setActiveTab("propagation")}
             >
               <span>{numProps}</span> Propagation{numProps !== 1 && "s"}
             </button>
 
             <div className="garden-tabs__active">
-              <div className={`indicator ${activeTab !== "plant" && "slide"}`}></div>
+              <div className={`indicator ${activeTab !== "plant" ? "slide" : null}`}></div>
             </div>
           </div>
 
