@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import mascot from "./../assets/mascot.svg";
+import mascot from "./../assets/1.svg";
 import plants from "./../plants.json";
 import home from "./../assets/home.svg";
 import add from "./../assets/add.svg";

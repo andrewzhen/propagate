@@ -1,7 +1,7 @@
+import React from 'react';
+import { auth } from '../services/firebase';
 import Sidebar from './Sidebar';
 import Map from './Map';
-
-import { auth } from '../services/firebase';
 
 const Home = ({ user }) => {
   return (
