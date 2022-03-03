@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import mascot from "./../assets/1.svg";
-import plants from "./../plants.json";
 import home from "./../assets/home.svg";
 import add from "./../assets/add.svg";
 import settings from "./../assets/settings.svg";
@@ -20,10 +19,18 @@ const Tabs = [
   }
 ];
 
-const Sidebar = ({ name }) => {
+const Sidebar = ({ name, plants, propagations }) => {
   const [activeTab, setActiveTab] = useState("plant");
-  const [numPlants, setNumPlants] = useState(0);
-  const [numProps, setNumProps] = useState(0);
+  const [userPlants, setUserPlants] = useState([])
+  const [userProps, setUserProps] = useState([])
+
+  useEffect(() => {
+    setUserPlants(plants)
+  }, [plants])
+
+  useEffect(() => {
+    setUserProps(propagations)
+  }, [propagations])
 
   return (
     <main>
@@ -39,14 +46,14 @@ const Sidebar = ({ name }) => {
               className={activeTab === "plant" ? "active" : null}
               onClick={() => setActiveTab("plant")}
             >
-              <span>{numPlants}</span> Plant{numPlants !== 1 && "s"}
+              <span>{userPlants.length}</span> Plant{userPlants.length !== 1 && "s"}
             </button>
 
             <button 
               className={activeTab === "propagation" ? "active" : null}
               onClick={() => setActiveTab("propagation")}
             >
-              <span>{numProps}</span> Propagation{numProps !== 1 && "s"}
+              <span>{userProps.length}</span> Propagation{userProps.length !== 1 && "s"}
             </button>
 
             <div className="garden-tabs__active">
@@ -63,7 +70,7 @@ const Sidebar = ({ name }) => {
           </div>
 
           <ul className="plant-list">
-            {plants.map((plant, idx) => (
+            {(activeTab === 'plant' ? userPlants : userProps).map((plant, idx) => ( 
               <li key={idx} className="plant">
                 <div className="plant-img-placeholder"></div>
                 <div className="plant-overview">

@@ -9,6 +9,7 @@ const Map = () => {
   const map = useRef(null);
   const [lng, setLng] = useState(-117.2234085);
   const [lat, setLat] = useState(32.8637729);
+  const [coordinates, setCoordinates] = useState([lng, lat])
   const [zoom, setZoom] = useState(16);
   const COLORS = {
     green: '#A7D2C4'
@@ -18,12 +19,16 @@ const Map = () => {
     db.collection('users').get().then(query => {
       query.forEach(element => {
         let user = element.data();
+
         console.log(user);
+
         let userCoordinates = [user.location.longitude, user.location.latitude];
+        setCoordinates(userCoordinates)
+
         const el = document.createElement('div');
         el.className = 'marker';
         el.style.backgroundColor = COLORS[user.backgroundColor];
-        console.log(user.backgroundColor);
+
         new mapboxgl.Marker(el).setLngLat(userCoordinates).addTo(map.current);
       })
     });
@@ -31,10 +36,11 @@ const Map = () => {
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
+
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/light-v10',
-      center: [lng, lat],
+      center: coordinates,
       zoom: zoom
     }).on('load', () => fetchUsers());
   });
@@ -42,6 +48,7 @@ const Map = () => {
   return (
     <div>
       <div ref={mapContainer} className="map-container" />
+      <button id="return" onClick={() => map.current.flyTo({center: coordinates, essential: true})}>Return Home</button>
     </div>
   )
 };

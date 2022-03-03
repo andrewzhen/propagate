@@ -304,3 +304,11 @@ a.mapboxgl-ctrl-logo, .mapboxgl-ctrl-attrib {
   border-radius: 50%;
   cursor: pointer;
 }
+
+button#return {
+  all: unset;
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  cursor: pointer;
+}
