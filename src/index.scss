@@ -49,6 +49,7 @@ table {
 
 /********************************* Variables **********************************/
 $green: #307473;
+$dark-green: #255A5A;
 $light-green: #EBF2F0;
 $off-white: #FFFBED;
 $white: #FFFFFF;
@@ -140,6 +141,7 @@ button {
   }
 
   @at-root #{&}-content {
+    position: relative;
     height: calc(100vh - 10rem - 4rem);
     display: flex;
     flex-direction: column;
@@ -194,6 +196,7 @@ button {
       color: $green;
       background-color: $light-green;
       padding: 2rem;
+      display: none;
   
       h3 {
         font-weight: 700;
@@ -250,6 +253,90 @@ button {
             all: unset;
             font-weight: 700;
           };
+        }
+      }
+    }
+
+    .shovelContainer {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: flex-end;
+      gap: 1.5rem;
+      width: 100%;
+      position: absolute;
+      bottom: 1.5rem;
+      right: 0;
+      padding: 0 2.5rem;
+
+      button {
+        all: unset;
+      }
+      
+      .shovelButton {
+        width: 4rem;
+        height: 4rem;
+        background: url("./assets/shovel.svg") center / 32px $green no-repeat;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.2s transform;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+
+        &.active {
+          background: url("./assets/close.svg") center / 22px $green no-repeat;
+          transform: scale(1.1);
+        }
+      }
+
+      .shovelActions {
+        display: flex;
+        flex-direction: column;
+        background-color: $green;
+        width: 100%;
+        border-radius: 25px;
+        font-size: 18px;
+        font-weight: 700;
+        color: $white;
+        transition: 0.2s;
+        opacity: 0;
+        visibility: hidden;
+        overflow: hidden;
+
+        &.visible {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        button {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex: 1 1 50%;
+          padding: 1.5rem 2rem;
+          cursor: pointer;
+          transition: 0.2s;
+
+          &:hover {
+            background-color: $dark-green;
+          }
+
+          p {
+            width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+            white-space: nowrap;
+          }
+        }
+
+        hr {
+          flex: 0 0 2px;
+          width: 80%;
+          margin: 0;
+          margin-left: 2rem;
+          border: none;
+          background-color: #C4C4C4;
         }
       }
     }

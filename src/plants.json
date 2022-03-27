@@ -1,27 +1,102 @@
 [
   {
-    "scientific": "asplenium nidus",
-    "name": "Bird's-nest fern",
-    "nickname": "Bernard"
+    "common_name": "Fiddle Leaf Fig",
+    "species_name": "Ficus lyrata",
+    "image_url": ""
   },
   {
-    "scientific": "asplenium nidus",
-    "name": "Bird's-nest fern",
-    "nickname": "Bernard"
+    "common_name": "Chinese Money Plant",
+    "species_name": "Pilea Peperomioides",
+    "image_url": ""
   },
   {
-    "scientific": "asplenium nidus",
-    "name": "Bird's-nest fern",
-    "nickname": "Bernard"
+    "common_name": "Spider Plant",
+    "species_name": "Chlorophytum Comosum",
+    "image_url": ""
   },
   {
-    "scientific": "asplenium nidus",
-    "name": "Bird's-nest fern",
-    "nickname": "Bernard"
+    "common_name": "Peace Lily",
+    "species_name": "Spathiphyllum Wallisii ",
+    "image_url": ""
   },
   {
-    "scientific": "asplenium nidus",
-    "name": "Bird's-nest fern",
-    "nickname": "Bernard"
+    "common_name": "Air Plant",
+    "species_name": "Tillandsia Genus",
+    "image_url": ""
+  },
+  {
+    "common_name": "Aloe Vera",
+    "species_name": "Aloe Barbadensis",
+    "image_url": ""
+  },
+  {
+    "common_name": "Jade Plant",
+    "species_name": "Crassula Ovata",
+    "image_url": ""
+  },
+  {
+    "common_name": "Monstera",
+    "species_name": "Monstera Deliciosa",
+    "image_url": ""
+  },
+  {
+    "common_name": "Snake Plant",
+    "species_name": "Sansevieria Trifasciata",
+    "image_url": ""
+  },
+  {
+    "common_name": "Lucky Bamboo",
+    "species_name": "Dracaena Sanderiana",
+    "image_url": ""
+  },
+  {
+    "common_name": "Ivy",
+    "species_name": "Hedera Helix",
+    "image_url": ""
+  },
+  {
+    "common_name": "Philodendron",
+    "species_name": "Philodendron Scandens",
+    "image_url": ""
+  },
+  {
+    "common_name": "Pothos",
+    "species_name": "Epipremnum Aureum",
+    "image_url": ""
+  },
+  {
+    "common_name": "Jelly Bean",
+    "species_name": "Sedum Rubrotinctum",
+    "image_url": ""
+  },
+  {
+    "common_name": "String of Pearls",
+    "species_name": "Senecio Rowleyanus",
+    "image_url": ""
+  },
+  {
+    "common_name": "String of Dolphins",
+    "species_name": "Senecio Peregrinus",
+    "image_url": ""
+  },
+  {
+    "common_name": "String of Bananas",
+    "species_name": "Curio Radicans",
+    "image_url": ""
+  },
+  {
+    "common_name": "Burro's Tail",
+    "species_name": "Sedum Morganianum",
+    "image_url": ""
+  },
+  {
+    "common_name": "Dudleya",
+    "species_name": "Dudleya Gnoma",
+    "image_url": ""
+  },
+  {
+    "common_name": "Bird's Nest Fern",
+    "species_name": "Asplenium Nidus",
+    "image_url": ""
   }
 ]
