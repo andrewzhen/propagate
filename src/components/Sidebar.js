@@ -1,16 +1,75 @@
-import Garden from "./Garden"
-import Footer from "./Footer"
+import Header from "./Header";
+import Garden from "./Garden";
+import Add from "./Add";
+import Footer from "./Footer";
 
-const Sidebar = ({sidebarView, setSidebarView, name, shovelActive, setShovelActive}) => {
+import add from "./../assets/add.svg";
+import give from "./../assets/give.svg";
+
+const Sidebar = ({
+  sidebarView,
+  setSidebarView,
+  name,
+  title,
+  setTitle,
+  shovelActive,
+  setShovelActive,
+}) => {
   return (
     <main>
       <div className="sidebar">
-        {sidebarView === 'garden' && <Garden setSidebarView={setSidebarView} name={name} shovelActive={shovelActive} setShovelActive={setShovelActive} />}
+        <Header
+          name={name}
+          title={title}
+          setTitle={setTitle}
+          backVisible={sidebarView !== "garden"}
+          setSidebarView={setSidebarView}
+        />
+
+        <div
+          className="shovelContainer"
+          style={{ display: sidebarView === "garden" ? "flex" : "none" }}
+        >
+          <button
+            className={`shovelButton ${shovelActive ? "active" : ""}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShovelActive(!shovelActive);
+            }}
+          ></button>
+          <div className={`shovelActions ${shovelActive ? "visible" : ""}`}>
+            <button
+              id="add"
+              onClick={() => {
+                setSidebarView("addToGarden");
+                setTitle("Add to your Garden");
+              }}
+            >
+              <p>Add to your garden</p>
+              <img src={add} alt="" />
+            </button>
+            <hr />
+            <button
+              id="give"
+              onClick={() => {
+                setSidebarView("givePlant");
+                setTitle("Give a plant");
+              }}
+            >
+              <p>Give a plant</p>
+              <img src={give} alt="" />
+            </button>
+          </div>
+        </div>
+
+        {sidebarView === "garden" && <Garden />}
+
+        {sidebarView === "addToGarden" && <Add />}
 
         <Footer />
       </div>
     </main>
-  )
+  );
 };
 
 export default Sidebar;

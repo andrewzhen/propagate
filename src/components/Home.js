@@ -1,20 +1,31 @@
-import React, {useEffect, useState} from 'react';
-import {auth} from '../services/firebase';
-import Sidebar from './Sidebar';
-import Map from './Map';
+import React, { useEffect, useState } from "react";
+import { auth } from "../services/firebase";
+import Sidebar from "./Sidebar";
+import Map from "./Map";
 
-const Home = ({user}) => {
-  const [sidebarView, setSidebarView] = useState('garden')
-  const [firstName, setFirstName] = useState('')
-  const [shovelActive, setShovelActive] = useState(false)
+const Home = ({ user }) => {
+  const [sidebarView, setSidebarView] = useState("garden");
+  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
+  const [shovelActive, setShovelActive] = useState(false);
 
   useEffect(() => {
-    setFirstName(user.displayName.split(' ')[0])
-  }, [user])
+    let name = user.displayName.split(" ")[0];
+    setName(name);
+    setTitle(`${name}'s Garden`);
+  }, [user]);
 
   return (
     <div onClick={() => setShovelActive(false)}>
-      <Sidebar sidebarView={sidebarView} setSidebarView={setSidebarView} name={firstName} shovelActive={shovelActive} setShovelActive={setShovelActive} />
+      <Sidebar
+        sidebarView={sidebarView}
+        setSidebarView={setSidebarView}
+        name={name}
+        title={title}
+        setTitle={setTitle}
+        shovelActive={shovelActive}
+        setShovelActive={setShovelActive}
+      />
 
       <Map />
 
@@ -22,7 +33,7 @@ const Home = ({user}) => {
         Sign out
       </button>
     </div>
-  )
+  );
 };
 
 export default Home;
