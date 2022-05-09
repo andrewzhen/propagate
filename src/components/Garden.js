@@ -47,18 +47,6 @@ const Garden = () => {
         </div>
       </div>
 
-      <div className="reminders">
-        <h3>Upcoming Reminders</h3>
-        <ul>
-          <li>
-            Rotate <span>Monastery</span> in <span>1 day</span>
-          </li>
-          <li>
-            Replace water for <span>Boo Thang</span> in <span>4 days</span>
-          </li>
-        </ul>
-      </div>
-
       <ul className="plant-list">
         {(activeTab === "plant" ? plants : propagations).map((plant, idx) => (
           <li key={idx} className="plant">

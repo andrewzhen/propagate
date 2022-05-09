@@ -1,20 +1,14 @@
+import React, { useState } from "react";
 import Header from "./Header";
 import Garden from "./Garden";
 import Add from "./Add";
-import Footer from "./Footer";
 
 import add from "./../assets/add.svg";
 import give from "./../assets/give.svg";
 
-const Sidebar = ({
-  sidebarView,
-  setSidebarView,
-  name,
-  title,
-  setTitle,
-  shovelActive,
-  setShovelActive,
-}) => {
+const Sidebar = ({ name, title, setTitle, shovelActive, setShovelActive }) => {
+  const [sidebarView, setSidebarView] = useState("garden");
+
   return (
     <main>
       <div className="sidebar">
@@ -64,9 +58,13 @@ const Sidebar = ({
 
         {sidebarView === "garden" && <Garden />}
 
-        {sidebarView === "addToGarden" && <Add />}
-
-        <Footer />
+        {sidebarView === "addToGarden" && (
+          <Add
+            name={name}
+            setTitle={setTitle}
+            setSidebarView={setSidebarView}
+          />
+        )}
       </div>
     </main>
   );

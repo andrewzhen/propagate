@@ -4,7 +4,6 @@ import Sidebar from "./Sidebar";
 import Map from "./Map";
 
 const Home = ({ user }) => {
-  const [sidebarView, setSidebarView] = useState("garden");
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
   const [shovelActive, setShovelActive] = useState(false);
@@ -18,8 +17,6 @@ const Home = ({ user }) => {
   return (
     <div onClick={() => setShovelActive(false)}>
       <Sidebar
-        sidebarView={sidebarView}
-        setSidebarView={setSidebarView}
         name={name}
         title={title}
         setTitle={setTitle}

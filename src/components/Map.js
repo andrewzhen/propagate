@@ -8,10 +8,9 @@ mapboxgl.accessToken =
 const Map = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(-117.2234085);
-  const [lat, setLat] = useState(32.8637729);
-  const [coordinates, setCoordinates] = useState([lng, lat]);
-  const [zoom, setZoom] = useState(16);
+  const [coordinates, setCoordinates] = useState([0, 0]);
+  const ZOOM = 0;
+  const [pitch, setPitch] = useState(1);
   const COLORS = {
     green: "#A7D2C4",
   };
@@ -30,6 +29,12 @@ const Map = () => {
             user.location.latitude,
           ];
           setCoordinates(userCoordinates);
+          map.current.flyTo({
+            center: userCoordinates,
+            speed: 1.3,
+            zoom: 16,
+            essential: true,
+          });
 
           const el = document.createElement("div");
           el.className = "marker";
@@ -40,6 +45,13 @@ const Map = () => {
       });
   };
 
+  const togglePitch = () => {
+    let currPitch = map.current.getPitch();
+    let newPitch = currPitch === 0 ? 60 : 0;
+    setPitch(newPitch);
+    map.current.setPitch(newPitch);
+  };
+
   useEffect(() => {
     if (map.current) return; // initialize map only once
 
@@ -47,21 +59,25 @@ const Map = () => {
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/light-v10",
       center: coordinates,
-      zoom: zoom,
-    }).on("load", () => fetchUsers());
+      ZOOM,
+      pitch,
+    })
+      .on("load", () => fetchUsers())
+      .addControl(new mapboxgl.NavigationControl(), "top-right");
   });
 
   return (
     <div>
       <div ref={mapContainer} className="map-container" />
+      <button type="button" id="pitch" onClick={() => togglePitch()}>
+        {pitch === 0 ? "3D" : "2D"}
+      </button>
       <button
         id="return"
         onClick={() =>
           map.current.flyTo({ center: coordinates, essential: true })
         }
-      >
-        Return Home
-      </button>
+      ></button>
     </div>
   );
 };
