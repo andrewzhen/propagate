@@ -170,6 +170,10 @@ body {
 
 button {
   all: unset;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
   cursor: pointer;
 }
 
@@ -207,7 +211,6 @@ button {
     padding: 1rem 2rem;
 
     button {
-      all: unset;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -253,10 +256,6 @@ button {
     z-index: 1;
     padding: 0 2.5rem;
 
-    button {
-      all: unset;
-    }
-
     .shovelButton {
       width: 4rem;
       height: 4rem;
@@ -265,13 +264,8 @@ button {
       cursor: pointer;
       transition: 0.2s transform;
 
-      &:hover {
-        // transform: scale(1.1);
-      }
-
       &.active {
         background: url("./assets/close.svg") center / 18px $green no-repeat;
-        // transform: scale(1.1);
       }
     }
 
@@ -341,7 +335,6 @@ button {
       font-weight: 600;
 
       button {
-        all: unset;
         width: 50%;
         height: 5rem;
         display: inline-flex;
@@ -420,7 +413,6 @@ button {
           }
 
           button {
-            all: unset;
             font-weight: 700;
           }
         }
@@ -527,7 +519,6 @@ button {
         cursor: pointer;
 
         button {
-          all: unset;
           color: $white;
           padding: 1rem 1.5rem;
 
@@ -569,7 +560,6 @@ a.mapboxgl-ctrl-logo,
 button {
   &#pitch,
   &#return {
-    all: unset;
     position: absolute;
     right: 10px;
     cursor: pointer;
