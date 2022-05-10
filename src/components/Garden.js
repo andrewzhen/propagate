@@ -7,14 +7,23 @@ const Garden = () => {
   const [propagations, setPropagations] = useState([]);
 
   const getPlants = () => {
-    db.collection("users")
+    let user = db.collection("users").doc("uQ0Jsdgp14BoPmUosPMq");
+    user
+      .collection("garden")
       .get()
-      .then((query) => {
-        query.forEach((element) => {
-          let user = element.data();
-          setPlants(user.plants);
-          setPropagations(user.propagations);
-        });
+      .then((gardenDoc) => {
+        let plants = [];
+        gardenDoc.forEach((plant) => plants.push(plant.data()));
+        setPlants(plants);
+      });
+
+    user
+      .collection("propagations")
+      .get()
+      .then((propagationsDoc) => {
+        let propagations = [];
+        propagationsDoc.forEach((plant) => propagations.push(plant.data()));
+        setPropagations(propagations);
       });
   };
 
@@ -54,8 +63,8 @@ const Garden = () => {
             <div className="plant-overview">
               <h3>{plant.nickname}</h3>
               <div>
-                <p className="scientific">{plant.scientific}</p>
-                <p>{plant.name}</p>
+                <p className="scientific">{plant["species_name"]}</p>
+                <p>{plant["common_name"]}</p>
               </div>
               <button>See More</button>
             </div>

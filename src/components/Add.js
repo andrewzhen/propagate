@@ -5,21 +5,42 @@ import { db } from "../services/firebase";
 import { limit } from "@firebase/firestore";
 
 const Add = ({ name, setTitle, setSidebarView }) => {
-  // const [plantList, setPlantList] = useState({});
   const [plantListCommonName, setPlantListCommonName] = useState([]);
-  const [propagating, setPropagating] = useState(true);
+  const [propagating, setPropagating] = useState(false);
+  const [commonName, setCommonName] = useState("");
+  const [nickname, setNickname] = useState("");
+
+  const addPlant = () => {
+    db.collection("plants")
+      .get()
+      .then((query) => {
+        query.forEach((plant) => {
+          if (commonName === plant.data()["common_name"]) {
+            const newPlant = {
+              common_name: commonName,
+              species_name: plant.data()["species_name"],
+              nickname,
+            };
+            db.collection("users")
+              .doc("uQ0Jsdgp14BoPmUosPMq")
+              .collection("garden")
+              .add(newPlant);
+          }
+        });
+      });
+  };
 
   useEffect(() => {
     db.collection("plants")
       .get()
       .then((query) => {
-        query.forEach((element) => {
-          let plants = element.data();
-          // setPlantList(plants.list);
-          setPlantListCommonName(plants.list.map((plant) => plant.common_name));
+        let commonNames = [];
+        query.forEach((documentSnapshot) => {
+          commonNames.push(documentSnapshot.data()["common_name"]);
         });
+        setPlantListCommonName(commonNames);
       });
-  });
+  }, []);
 
   return (
     <div className="sidebar-content padded">
@@ -54,12 +75,21 @@ const Add = ({ name, setTitle, setSidebarView }) => {
         <>
           <div className="section">
             <h2>What kind of plant is it?</h2>
-            <Dropdown title="Select One" list={plantListCommonName} />
+            <Dropdown
+              title="Select One"
+              list={plantListCommonName}
+              selectedItem={commonName}
+              setSelectedItem={setCommonName}
+            />
           </div>
 
           <div className="section">
             <h2>Does it have a nickname?</h2>
-            <input type="text" placeholder="Nickname"></input>
+            <input
+              type="text"
+              placeholder="Nickname"
+              onChange={(e) => setNickname(e.target.value)}
+            ></input>
           </div>
         </>
       )}
@@ -68,6 +98,7 @@ const Add = ({ name, setTitle, setSidebarView }) => {
         type="button"
         className="finish"
         onClick={() => {
+          addPlant();
           setTitle(`${name}'s Garden`);
           setSidebarView("garden");
         }}

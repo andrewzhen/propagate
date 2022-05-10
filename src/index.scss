@@ -508,7 +508,7 @@ button {
         background-color: $green;
         color: $white;
         border-radius: 10px;
-        padding: 0.75rem 1.5rem;
+        padding: 1rem 1.5rem;
         cursor: pointer;
 
         img {
@@ -529,8 +529,19 @@ button {
         button {
           all: unset;
           color: $white;
-          padding: 0.75rem 1.5rem;
-          border-bottom: 1px solid #fff;
+          padding: 1rem 1.5rem;
+
+          &:last-child {
+            border-radius: 0 0 10px 10px;
+          }
+
+          &:not(:last-child) {
+            border-bottom: 1px solid #fff;
+          }
+
+          &:hover {
+            background-color: $green;
+          }
         }
       }
     }

@@ -47,7 +47,7 @@ const Map = () => {
 
   const togglePitch = () => {
     let currPitch = map.current.getPitch();
-    let newPitch = currPitch === 0 ? 60 : 0;
+    let newPitch = currPitch === 60 ? 0 : 60;
     setPitch(newPitch);
     map.current.setPitch(newPitch);
   };
@@ -70,7 +70,7 @@ const Map = () => {
     <div>
       <div ref={mapContainer} className="map-container" />
       <button type="button" id="pitch" onClick={() => togglePitch()}>
-        {pitch === 0 ? "3D" : "2D"}
+        {pitch === 60 ? "2D" : "3D"}
       </button>
       <button
         id="return"

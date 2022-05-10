@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import dropdown from "./../assets/dropdown.svg";
 
-const Dropdown = ({ title, list }) => {
-  const [selectedItem, setSelectedItem] = useState("");
+const Dropdown = ({ title, list, selectedItem, setSelectedItem }) => {
   const [listOpen, setListOpen] = useState(false);
 
   const toggleList = () => setListOpen(!listOpen);

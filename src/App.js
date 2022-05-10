@@ -11,8 +11,6 @@ const App = () => {
     firebase.auth().onAuthStateChanged((user) => setUser(user));
   }, []);
 
-  console.log(user);
-
   return <div id="app">{user ? <Home user={user} /> : <Login />}</div>;
 };
 
