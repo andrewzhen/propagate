@@ -580,6 +580,7 @@ button {
     align-items: center;
     background-color: #fff;
     border-radius: 4px;
+    font-size: 14px;
     font-weight: 700;
     -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
     -webkit-box-shadow: 0 0 2px rgb(0 0 0 / 10%);
@@ -596,7 +597,7 @@ button {
   }
 
   &#return {
-    top: 145px;
+    top: 142px;
 
     &::before {
       content: "";

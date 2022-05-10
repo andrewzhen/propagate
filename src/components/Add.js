@@ -2,7 +2,6 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Dropdown from "./Dropdown";
 import { db } from "../services/firebase";
-import { limit } from "@firebase/firestore";
 
 const Add = ({ name, setTitle, setSidebarView }) => {
   const [plantListCommonName, setPlantListCommonName] = useState([]);
