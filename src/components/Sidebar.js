@@ -6,18 +6,29 @@ import Add from "./Add";
 import add from "./../assets/add.svg";
 import give from "./../assets/give.svg";
 
-const Sidebar = ({ name, title, setTitle, shovelActive, setShovelActive }) => {
-  const [sidebarView, setSidebarView] = useState("garden");
-
+const Sidebar = ({
+  idToken,
+  activeToken,
+  name,
+  title,
+  setTitle,
+  shovelActive,
+  setShovelActive,
+  sidebarView,
+  setSidebarView,
+  setActiveToken,
+}) => {
   return (
     <main>
       <div className="sidebar">
         <Header
+          idToken={idToken}
           name={name}
           title={title}
           setTitle={setTitle}
           backVisible={sidebarView !== "garden"}
           setSidebarView={setSidebarView}
+          setActiveToken={setActiveToken}
         />
 
         <div
@@ -56,7 +67,9 @@ const Sidebar = ({ name, title, setTitle, shovelActive, setShovelActive }) => {
           </div>
         </div>
 
-        {sidebarView === "garden" && <Garden />}
+        {(sidebarView === "garden" || sidebarView === "neighbor") && (
+          <Garden activeToken={activeToken} />
+        )}
 
         {sidebarView === "addToGarden" && (
           <Add

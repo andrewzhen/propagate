@@ -19,13 +19,18 @@ const Add = ({ name, setTitle, setSidebarView }) => {
               common_name: commonName,
               species_name: plant.data()["species_name"],
               nickname,
+              propagation: propagating,
             };
             db.collection("users")
-              .doc("uQ0Jsdgp14BoPmUosPMq")
+              .doc("KGf72XPzMaXI8o6OFpDh")
               .collection("garden")
               .add(newPlant);
           }
         });
+      })
+      .then(() => {
+        setTitle(`${name}'s Garden`);
+        setSidebarView("garden");
       });
   };
 
@@ -98,8 +103,6 @@ const Add = ({ name, setTitle, setSidebarView }) => {
         className="finish"
         onClick={() => {
           addPlant();
-          setTitle(`${name}'s Garden`);
-          setSidebarView("garden");
         }}
       >
         Finish

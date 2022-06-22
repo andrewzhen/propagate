@@ -1,6 +1,14 @@
 import mascot from "./../assets/1.svg";
 
-const Header = ({ name, title, setTitle, backVisible, setSidebarView }) => {
+const Header = ({
+  idToken,
+  name,
+  title,
+  setTitle,
+  backVisible,
+  setSidebarView,
+  setActiveToken,
+}) => {
   return (
     <header>
       {backVisible && (
@@ -8,9 +16,11 @@ const Header = ({ name, title, setTitle, backVisible, setSidebarView }) => {
           onClick={() => {
             setSidebarView("garden");
             setTitle(`${name}'s Garden`);
+            setActiveToken(idToken);
           }}
         >
-          {name}'s Garden
+          {/* {name}'s Garden */}
+          Back to your garden
         </button>
       )}
       <h1>{title}</h1>

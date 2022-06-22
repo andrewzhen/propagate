@@ -1,35 +1,33 @@
 import { useEffect, useState } from "react";
 import { db } from "../services/firebase";
 
-const Garden = () => {
+const Garden = ({ activeToken }) => {
   const [activeTab, setActiveTab] = useState("plant");
   const [plants, setPlants] = useState([]);
   const [propagations, setPropagations] = useState([]);
 
-  const getPlants = () => {
-    let user = db.collection("users").doc("uQ0Jsdgp14BoPmUosPMq");
+  const getPlants = (queryId) => {
+    let user = db.collection("users").doc(queryId);
     user
       .collection("garden")
       .get()
       .then((gardenDoc) => {
         let plants = [];
-        gardenDoc.forEach((plant) => plants.push(plant.data()));
-        setPlants(plants);
-      });
-
-    user
-      .collection("propagations")
-      .get()
-      .then((propagationsDoc) => {
         let propagations = [];
-        propagationsDoc.forEach((plant) => propagations.push(plant.data()));
+        gardenDoc.forEach((plant) => {
+          plants.push(plant.data());
+          if (plant.data().propagation) {
+            propagations.push(plant.data());
+          }
+        });
+        setPlants(plants);
         setPropagations(propagations);
       });
   };
 
   useEffect(() => {
-    getPlants();
-  }, []);
+    activeToken && getPlants(activeToken);
+  }, [activeToken]);
 
   return (
     <div className="sidebar-content">

@@ -139,9 +139,19 @@ $white: #ffffff;
 $grey: #b9b7bd;
 $radius: 25px;
 
+@font-face {
+  font-family: "Raisonne";
+  src: url("./assets/fonts/Raisonne\ DemiBold.ttf") format("ttf");
+}
+
+@font-face {
+  font-family: "Soin Sans Neue";
+  src: url("./assets/fonts/Stawix\ -\ SoinSansNeue-Roman.otf") format("ttf");
+}
+
 /*********************************** Main ************************************/
 body {
-  font-family: -apple-system, sans-serif;
+  font-family: "Soin Sans Neue", -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
@@ -154,6 +164,15 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Raisonne", -apple-system, sans-serif;
 }
 
 .login {
@@ -259,7 +278,7 @@ button {
     .shovelButton {
       width: 4rem;
       height: 4rem;
-      background: url("./assets/shovel.svg") center / 32px $green no-repeat;
+      background: url("./assets/shovel.svg") center / 26px $green no-repeat;
       border-radius: 50px;
       cursor: pointer;
       transition: 0.2s transform;
@@ -286,6 +305,10 @@ button {
       &.visible {
         opacity: 1;
         visibility: visible;
+
+        button {
+          pointer-events: all;
+        }
       }
 
       button {
@@ -294,8 +317,9 @@ button {
         align-items: center;
         flex: 1 1 50%;
         padding: 1.5rem 2rem;
-        cursor: pointer;
         transition: 0.2s;
+        cursor: pointer;
+        pointer-events: none;
 
         &:hover {
           background-color: $dark-green;
