@@ -52,8 +52,8 @@ const Map = ({
           geometry: {
             type: "Point",
             coordinates: [
-              user.coordinates.longitude,
-              user.coordinates.latitude,
+              user.coordinates.longitude + (Math.random() * 2 - 1) / 12,
+              user.coordinates.latitude + (Math.random() * 2 - 1) / 12,
             ],
           },
           properties: {
@@ -76,7 +76,7 @@ const Map = ({
     map.current.flyTo({
       center: userLocation,
       speed: 1.3,
-      zoom: 5,
+      zoom: idToken === activeToken ? 5 : map.current.getZoom(),
       essential: true,
     });
 
@@ -134,7 +134,6 @@ const Map = ({
             setTitle(`${e.features[0].properties.name.split(" ")[0]}'s Garden`);
             map.current.flyTo({
               center: e.features[0].geometry.coordinates,
-              essential: true,
             });
           }
         });

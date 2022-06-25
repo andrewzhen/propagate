@@ -20,9 +20,10 @@ const Add = ({ name, setTitle, setSidebarView }) => {
               species_name: plant.data()["species_name"],
               nickname,
               propagation: propagating,
+              image_url: plant.data()["image_url"],
             };
             db.collection("users")
-              .doc("KGf72XPzMaXI8o6OFpDh")
+              .doc("PmFVLVbVMeFHp5reTY2u")
               .collection("garden")
               .add(newPlant);
           }

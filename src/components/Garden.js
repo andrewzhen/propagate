@@ -57,7 +57,9 @@ const Garden = ({ activeToken }) => {
       <ul className="plant-list">
         {(activeTab === "plant" ? plants : propagations).map((plant, idx) => (
           <li key={idx} className="plant">
-            <div className="plant-img-placeholder"></div>
+            <div className="plant-img-placeholder">
+              <img src={plant["image_url"]} alt="" />
+            </div>
             <div className="plant-overview">
               <h3>{plant.nickname}</h3>
               <div>

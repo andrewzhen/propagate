@@ -8,7 +8,10 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => setUser(user));
+    firebase.auth().onAuthStateChanged((user) => {
+      setUser(user);
+      console.log(user.uid);
+    });
   }, []);
 
   return <div id="app">{user ? <Home user={user} /> : <Login />}</div>;
