@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { db } from "../services/firebase";
+import copy from "../assets/copy.svg";
+import check from "../assets/check.svg";
+import { doc } from "@firebase/firestore";
 
 const Garden = ({ activeToken }) => {
   const [activeTab, setActiveTab] = useState("plant");
   const [plants, setPlants] = useState([]);
   const [propagations, setPropagations] = useState([]);
+  const clipboards = useRef([]);
 
   const getPlants = (queryId) => {
     let user = db.collection("users").doc(queryId);
@@ -15,9 +19,13 @@ const Garden = ({ activeToken }) => {
         let plants = [];
         let propagations = [];
         gardenDoc.forEach((plant) => {
-          plants.push(plant.data());
+          let plantData = plant.data();
+          plantData.id = plant.id;
+
+          plants.push(plantData);
+
           if (plant.data().propagation) {
-            propagations.push(plant.data());
+            propagations.push(plantData);
           }
         });
         setPlants(plants);
@@ -66,7 +74,22 @@ const Garden = ({ activeToken }) => {
                 <p className="scientific">{plant["species_name"]}</p>
                 <p>{plant["common_name"]}</p>
               </div>
-              <button>See More</button>
+              <img
+                ref={(el) => (clipboards.current[idx] = el)}
+                className="plant-id"
+                src={copy}
+                onClick={() => {
+                  navigator.clipboard.writeText(plant.id);
+                  clipboards.current[idx].src = check;
+                  setTimeout(() => {
+                    try {
+                      clipboards.current[idx].src = copy;
+                    } catch (e) {}
+                  }, 3000);
+                }}
+                alt="Copy Plant ID"
+                title="Copy Plant ID"
+              />
             </div>
           </li>
         ))}

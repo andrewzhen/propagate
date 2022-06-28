@@ -53,7 +53,7 @@ const Sidebar = ({
               <p>Add to your garden</p>
               <img src={add} alt="" />
             </button>
-            <hr />
+            {/* <hr />
             <button
               id="give"
               onClick={() => {
@@ -63,7 +63,7 @@ const Sidebar = ({
             >
               <p>Give a plant</p>
               <img src={give} alt="" />
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -73,6 +73,7 @@ const Sidebar = ({
 
         {sidebarView === "addToGarden" && (
           <Add
+            idToken={idToken}
             name={name}
             setTitle={setTitle}
             setSidebarView={setSidebarView}

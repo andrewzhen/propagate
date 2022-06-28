@@ -3,8 +3,6 @@ import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-load
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { db } from "../services/firebase";
 import Icon from "./../assets/1.png";
-import { getDocs } from "@firebase/firestore";
-import Garden from "./Garden";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYWp6aGVuIiwiYSI6ImNrbGw4OWsweTExZmEyd3Fybmh2ZGN4ZmYifQ.m7cjSwBWDtwtWetZl4ZSjg";
@@ -27,7 +25,6 @@ const Map = ({
     yellow: "#E7B87D",
     blue: "#5B84EE",
   };
-  const [gardenData, setGardenData] = useState([]);
   const [showReturnButton, setShowReturnButton] = useState(false);
 
   const getCoordinatesFromPostcode = async (postcode) => {
@@ -36,6 +33,43 @@ const Map = ({
     );
     const data = await response.json();
     return data.features[0].geometry.coordinates;
+  };
+
+  const drawLines = (geojson) => {
+    let lineCoordinates = geojson.features.map(
+      (feature) => feature.geometry.coordinates
+    );
+    // console.log(lineCoordinates);
+    map.current.addSource("route", {
+      type: "geojson",
+      data: {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "LineString",
+          // coordinates: [
+          // [-122.269963, 37.868671],
+          // [-118.446021, 34.1997],
+          // [-117.218288, 32.867572],
+          // ],
+          coordinates: lineCoordinates,
+        },
+      },
+    });
+
+    map.current.addLayer({
+      id: "route",
+      type: "line",
+      source: "route",
+      layout: {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      paint: {
+        "line-color": "#aaa",
+        "line-width": 4,
+      },
+    });
   };
 
   const getGeojson = (users, gardens) => {
@@ -126,6 +160,8 @@ const Map = ({
           },
         });
 
+        // drawLines(geojson);
+
         map.current.on("click", "user-labels", (e) => {
           let id = e.features[0].properties.id;
           if (id !== idToken) {
@@ -170,7 +206,13 @@ const Map = ({
 
         return allGardens;
       })
-      .then((allGardens) => setGardenData(allGardens));
+      .then((gardenData) => {
+        db.collection("users")
+          .get()
+          .then((query) =>
+            addMapData(activeToken, getGeojson(query, gardenData))
+          );
+      });
   };
 
   const togglePitch = () => {
@@ -179,16 +221,6 @@ const Map = ({
     setPitch(newPitch);
     map.current.setPitch(newPitch);
   };
-
-  useEffect(() => {
-    if (activeToken && gardenData) {
-      db.collection("users")
-        .get()
-        .then((query) =>
-          addMapData(activeToken, getGeojson(query, gardenData))
-        );
-    }
-  }, [activeToken, gardenData]);
 
   useEffect(() => {
     if (map.current || !activeToken) return; // initialize map only once

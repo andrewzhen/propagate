@@ -3,36 +3,64 @@ import { useEffect, useState } from "react";
 import Dropdown from "./Dropdown";
 import { db } from "../services/firebase";
 
-const Add = ({ name, setTitle, setSidebarView }) => {
+const Add = ({ idToken, name, setTitle, setSidebarView }) => {
   const [plantListCommonName, setPlantListCommonName] = useState([]);
   const [propagating, setPropagating] = useState(false);
+  const [propagationCode, setPropagationCode] = useState();
   const [commonName, setCommonName] = useState("");
   const [nickname, setNickname] = useState("");
 
-  const addPlant = () => {
-    db.collection("plants")
-      .get()
-      .then((query) => {
-        query.forEach((plant) => {
-          if (commonName === plant.data()["common_name"]) {
-            const newPlant = {
-              common_name: commonName,
-              species_name: plant.data()["species_name"],
-              nickname,
-              propagation: propagating,
-              image_url: plant.data()["image_url"],
-            };
-            db.collection("users")
-              .doc("PmFVLVbVMeFHp5reTY2u")
-              .collection("garden")
-              .add(newPlant);
-          }
-        });
-      })
-      .then(() => {
-        setTitle(`${name}'s Garden`);
-        setSidebarView("garden");
-      });
+  const addPlant = (plantData) => {
+    const newPlant = {
+      common_name: plantData["common_name"],
+      species_name: plantData["species_name"],
+      nickname: nickname || plantData["nickname"],
+      propagation: false,
+      image_url: plantData["image_url"],
+    };
+    db.collection("users").doc(idToken).collection("garden").add(newPlant);
+  };
+
+  const finishAddingPlant = async () => {
+    let promise = new Promise((resolve) => {
+      if (propagating) {
+        db.collection("users")
+          .get()
+          .then((users) => {
+            users.forEach((user) => {
+              user.ref
+                .collection("garden")
+                .get()
+                .then((plants) => {
+                  plants.forEach((plant) => {
+                    if (propagationCode === plant.id) {
+                      addPlant(plant.data());
+                      return;
+                    }
+                  });
+                });
+            });
+          });
+      } else {
+        db.collection("plants")
+          .get()
+          .then((query) => {
+            query.forEach((plant) => {
+              if (commonName === plant.data()["common_name"]) {
+                addPlant(plant.data());
+                return;
+              }
+            });
+          });
+      }
+
+      resolve("resolved");
+    });
+
+    let result = await promise;
+    setTitle(`${name}'s Garden`);
+    setSidebarView("garden");
+    alert(result);
   };
 
   useEffect(() => {
@@ -72,7 +100,11 @@ const Add = ({ name, setTitle, setSidebarView }) => {
       {propagating && (
         <div className="section">
           <h2>Enter the code of the propagation you're receiving.</h2>
-          <input type="text" placeholder="Code"></input>
+          <input
+            type="text"
+            placeholder="Code"
+            onChange={(e) => setPropagationCode(e.target.value)}
+          ></input>
         </div>
       )}
 
@@ -87,25 +119,21 @@ const Add = ({ name, setTitle, setSidebarView }) => {
               setSelectedItem={setCommonName}
             />
           </div>
-
-          <div className="section">
-            <h2>Does it have a nickname?</h2>
-            <input
-              type="text"
-              placeholder="Nickname"
-              onChange={(e) => setNickname(e.target.value)}
-            ></input>
-          </div>
         </>
       )}
 
-      <button
-        type="button"
-        className="finish"
-        onClick={() => {
-          addPlant();
-        }}
-      >
+      <div className="section">
+        <h2>
+          Give your {commonName ? commonName : "plant"} a nickname (optional)
+        </h2>
+        <input
+          type="text"
+          placeholder="Nickname"
+          onChange={(e) => setNickname(e.target.value)}
+        ></input>
+      </div>
+
+      <button type="button" className="finish" onClick={finishAddingPlant}>
         Finish
       </button>
     </div>
