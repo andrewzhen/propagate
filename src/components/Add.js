@@ -1,23 +1,29 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import Dropdown from "./Dropdown";
+import { serverTimestamp } from "firebase/firestore";
 import { db } from "../services/firebase";
 
 const Add = ({ idToken, name, setTitle, setSidebarView }) => {
   const [plantListCommonName, setPlantListCommonName] = useState([]);
   const [propagating, setPropagating] = useState(false);
-  const [propagationCode, setPropagationCode] = useState();
+  const [propagationCode, setPropagationCode] = useState("");
   const [commonName, setCommonName] = useState("");
   const [nickname, setNickname] = useState("");
+  const [errorState, setErrorState] = useState(false);
 
-  const addPlant = (plantData) => {
+  const addPlant = (plantData, propagating) => {
     const newPlant = {
       common_name: plantData["common_name"],
       species_name: plantData["species_name"],
-      nickname: nickname || plantData["nickname"],
-      propagation: false,
+      nickname: propagating
+        ? nickname || plantData?.nickname
+        : plantData?.nickname || nickname,
+      propagation: propagating,
       image_url: plantData["image_url"],
+      timestamp: serverTimestamp(),
     };
+
     db.collection("users").doc(idToken).collection("garden").add(newPlant);
   };
 
@@ -27,15 +33,22 @@ const Add = ({ idToken, name, setTitle, setSidebarView }) => {
         db.collection("users")
           .get()
           .then((users) => {
-            users.forEach((user) => {
+            users.docs.forEach((user, userIdx) => {
               user.ref
                 .collection("garden")
                 .get()
                 .then((plants) => {
-                  plants.forEach((plant) => {
+                  plants.docs.forEach((plant, plantIdx) => {
                     if (propagationCode === plant.id) {
-                      addPlant(plant.data());
-                      return;
+                      addPlant(plant.data(), propagating);
+                      resolve("resolved");
+                    } else {
+                      if (
+                        plantIdx === plants.size - 1 &&
+                        userIdx === users.size - 1
+                      ) {
+                        resolve("rejected");
+                      }
                     }
                   });
                 });
@@ -47,21 +60,30 @@ const Add = ({ idToken, name, setTitle, setSidebarView }) => {
           .then((query) => {
             query.forEach((plant) => {
               if (commonName === plant.data()["common_name"]) {
-                addPlant(plant.data());
-                return;
+                addPlant(plant.data(), propagating);
+                resolve("resolved");
               }
             });
           });
       }
-
-      resolve("resolved");
     });
 
     let result = await promise;
-    setTitle(`${name}'s Garden`);
-    setSidebarView("garden");
-    alert(result);
+    if (result === "rejected") {
+      setErrorState(true);
+    } else {
+      setTitle(`${name}'s Garden`);
+      setSidebarView("garden");
+    }
   };
+
+  useEffect(() => {
+    setCommonName("");
+  }, [propagating]);
+
+  useEffect(() => {
+    setErrorState(false);
+  }, [propagationCode]);
 
   useEffect(() => {
     db.collection("plants")
@@ -82,14 +104,14 @@ const Add = ({ idToken, name, setTitle, setSidebarView }) => {
         <div className="button-container">
           <button
             type="button"
-            className={propagating ? "selected" : ""}
+            className={`styledBtn ${propagating ? "selected" : ""}`}
             onClick={() => setPropagating(true)}
           >
             Yes
           </button>
           <button
             type="button"
-            className={!propagating ? "selected" : ""}
+            className={`styledBtn ${!propagating ? "selected" : ""}`}
             onClick={() => setPropagating(false)}
           >
             No
@@ -98,13 +120,17 @@ const Add = ({ idToken, name, setTitle, setSidebarView }) => {
       </div>
 
       {propagating && (
-        <div className="section">
+        <div className={`section ${errorState ? "errorState" : ""}`}>
           <h2>Enter the code of the propagation you're receiving.</h2>
           <input
             type="text"
             placeholder="Code"
             onChange={(e) => setPropagationCode(e.target.value)}
+            spellCheck="false"
           ></input>
+          <p id="codeErrorMsg">
+            Oops! Couldn't find this propagation. Try another code.
+          </p>
         </div>
       )}
 
@@ -130,10 +156,17 @@ const Add = ({ idToken, name, setTitle, setSidebarView }) => {
           type="text"
           placeholder="Nickname"
           onChange={(e) => setNickname(e.target.value)}
+          spellCheck="false"
         ></input>
       </div>
 
-      <button type="button" className="finish" onClick={finishAddingPlant}>
+      <button
+        type="button"
+        className={`styledBtn finish ${
+          commonName || propagationCode.length >= 20 ? "" : "disabled"
+        }`}
+        onClick={finishAddingPlant}
+      >
         Finish
       </button>
     </div>

@@ -1,14 +1,23 @@
-import mascot from "./../assets/1.svg";
+import purple from "./../assets/purple.png";
+import blue from "./../assets/blue.png";
+import orange from "./../assets/orange.png";
+import yellow from "./../assets/yellow.png";
+import red from "./../assets/red.png";
 
 const Header = ({
   idToken,
   name,
   title,
   setTitle,
+  activeIcon,
+  icon,
+  setIcon,
   backVisible,
   setSidebarView,
   setActiveToken,
 }) => {
+  const ICONS = { purple, blue, orange, yellow, red };
+
   return (
     <header>
       {backVisible && (
@@ -16,15 +25,15 @@ const Header = ({
           onClick={() => {
             setSidebarView("garden");
             setTitle(`${name}'s Garden`);
+            setIcon(activeIcon);
             setActiveToken(idToken);
           }}
         >
-          {/* {name}'s Garden */}
           Back to your garden
         </button>
       )}
       <h1>{title}</h1>
-      <img src={mascot} alt="" />
+      <img src={ICONS[icon]} alt="" />
     </header>
   );
 };

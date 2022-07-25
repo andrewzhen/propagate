@@ -1,19 +1,22 @@
 import { useEffect, useState, useRef } from "react";
 import { db } from "../services/firebase";
-import copy from "../assets/copy.svg";
-import check from "../assets/check.svg";
-import { doc } from "@firebase/firestore";
+import Plant from "../components/Plant";
 
-const Garden = ({ activeToken }) => {
-  const [activeTab, setActiveTab] = useState("plant");
+const Garden = ({ idToken, activeToken }) => {
   const [plants, setPlants] = useState([]);
   const [propagations, setPropagations] = useState([]);
+  const [activeTab, setActiveTab] = useState("plant");
   const clipboards = useRef([]);
 
-  const getPlants = (queryId) => {
-    let user = db.collection("users").doc(queryId);
-    user
+  useEffect(() => {
+    setActiveTab("plant");
+  }, [plants]);
+
+  const getPlants = (token) => {
+    db.collection("users")
+      .doc(token)
       .collection("garden")
+      .orderBy("timestamp")
       .get()
       .then((gardenDoc) => {
         let plants = [];
@@ -23,13 +26,14 @@ const Garden = ({ activeToken }) => {
           plantData.id = plant.id;
 
           plants.push(plantData);
-
-          if (plant.data().propagation) {
-            propagations.push(plantData);
-          }
+          plant.data().propagation && propagations.push(plantData);
         });
-        setPlants(plants);
-        setPropagations(propagations);
+
+        return { plants, propagations };
+      })
+      .then((garden) => {
+        setPlants(garden.plants);
+        setPropagations(garden.propagations);
       });
   };
 
@@ -63,36 +67,19 @@ const Garden = ({ activeToken }) => {
       </div>
 
       <ul className="plant-list">
-        {(activeTab === "plant" ? plants : propagations).map((plant, idx) => (
-          <li key={idx} className="plant">
-            <div className="plant-img-placeholder">
-              <img src={plant["image_url"]} alt="" />
-            </div>
-            <div className="plant-overview">
-              <h3>{plant.nickname}</h3>
-              <div>
-                <p className="scientific">{plant["species_name"]}</p>
-                <p>{plant["common_name"]}</p>
-              </div>
-              <img
-                ref={(el) => (clipboards.current[idx] = el)}
-                className="plant-id"
-                src={copy}
-                onClick={() => {
-                  navigator.clipboard.writeText(plant.id);
-                  clipboards.current[idx].src = check;
-                  setTimeout(() => {
-                    try {
-                      clipboards.current[idx].src = copy;
-                    } catch (e) {}
-                  }, 3000);
-                }}
-                alt="Copy Plant ID"
-                title="Copy Plant ID"
-              />
-            </div>
-          </li>
-        ))}
+        {(activeTab === "plant" ? plants : propagations).map(
+          (plant, plantIdx) => (
+            <Plant
+              key={plantIdx}
+              plantIdx={plantIdx}
+              idToken={idToken}
+              activeToken={activeToken}
+              getPlants={getPlants}
+              plant={plant}
+              clipboards={clipboards}
+            />
+          )
+        )}
       </ul>
     </div>
   );

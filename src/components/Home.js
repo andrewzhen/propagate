@@ -8,8 +8,11 @@ const Home = ({ user }) => {
   const [activeToken, setActiveToken] = useState("");
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
+  const [activeIcon, setActiveIcon] = useState("");
+  const [icon, setIcon] = useState("");
   const [shovelActive, setShovelActive] = useState(false);
   const [sidebarView, setSidebarView] = useState("garden");
+  const [sidebarHidden, setSidebarHidden] = useState(false);
 
   useEffect(() => {
     let name = user.displayName.split(" ")[0];
@@ -23,6 +26,8 @@ const Home = ({ user }) => {
         querySnapshot.forEach((doc) => {
           setIdToken(doc.id);
           setActiveToken(doc.id);
+          setActiveIcon(doc.data().icon);
+          setIcon(doc.data().icon);
         })
       );
 
@@ -41,10 +46,15 @@ const Home = ({ user }) => {
         name={name}
         title={title}
         setTitle={setTitle}
+        activeIcon={activeIcon}
+        icon={icon}
+        setIcon={setIcon}
         shovelActive={shovelActive}
         setShovelActive={setShovelActive}
         sidebarView={sidebarView}
         setSidebarView={setSidebarView}
+        sidebarHidden={sidebarHidden}
+        setSidebarHidden={setSidebarHidden}
       />
 
       <Map
@@ -52,7 +62,9 @@ const Home = ({ user }) => {
         activeToken={activeToken}
         setActiveToken={setActiveToken}
         setTitle={setTitle}
+        setIcon={setIcon}
         setSidebarView={setSidebarView}
+        setSidebarHidden={setSidebarHidden}
       />
 
       <button id="logoutBtn" onClick={() => auth.signOut()}>

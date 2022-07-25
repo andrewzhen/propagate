@@ -2,7 +2,11 @@ import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { db } from "../services/firebase";
-import Icon from "./../assets/1.png";
+import purple from "./../assets/purple.png";
+import blue from "./../assets/blue.png";
+import orange from "./../assets/orange.png";
+import yellow from "./../assets/yellow.png";
+import red from "./../assets/red.png";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYWp6aGVuIiwiYSI6ImNrbGw4OWsweTExZmEyd3Fybmh2ZGN4ZmYifQ.m7cjSwBWDtwtWetZl4ZSjg";
@@ -12,19 +16,15 @@ const Map = ({
   activeToken,
   setActiveToken,
   setTitle,
+  setIcon,
   setSidebarView,
+  setSidebarHidden,
 }) => {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [coordinates, setCoordinates] = useState([0, 0]);
   const ZOOM = 0;
   const [pitch, setPitch] = useState(1);
-  const COLORS = {
-    green: "#A7D2C4",
-    red: "#FF5A5F",
-    yellow: "#E7B87D",
-    blue: "#5B84EE",
-  };
   const [showReturnButton, setShowReturnButton] = useState(false);
 
   const getCoordinatesFromPostcode = async (postcode) => {
@@ -93,7 +93,8 @@ const Map = ({
           properties: {
             id: user.id,
             name: `${user.firstName} ${user.lastName}`,
-            color: user.backgroundColor,
+            icon: user.icon,
+            backgroundColor: user.backgroundColor,
             garden: gardens[idx] && gardens[idx].map((x) => x["common_name"]),
           },
         };
@@ -103,7 +104,7 @@ const Map = ({
 
   const addMapData = (id, geojson) => {
     let userLocation = geojson.features.find(
-      (feature) => feature.properties.id == id
+      (feature) => feature.properties.id === id
     ).geometry.coordinates;
     setCoordinates(userLocation);
 
@@ -114,74 +115,98 @@ const Map = ({
       essential: true,
     });
 
-    !map.current.hasImage(`icon-${id}`) &&
-      !map.current.getLayer("user-labels") &&
-      map.current.loadImage(Icon, (error, image) => {
-        if (error) throw error;
+    let userSource = "users";
+    !map.current.getSource(userSource) &&
+      map.current.addSource(userSource, {
+        type: "geojson",
+        data: geojson,
+      });
 
-        map.current.addImage(`icon-${id}`, image, { sdf: true });
-        map.current.addSource("users", {
-          type: "geojson",
-          data: geojson,
-        });
+    const ICONS = { purple, blue, orange, yellow, red };
+    const COLORS = ["#A7D2C4", "#FF5A5F", "#E7B87D", "#5B84EE"];
+
+    geojson.features.forEach((feature, idx) => {
+      let icon = feature.properties.icon;
+      let layerIcon = `icon-${idx + 1}`;
+      let layerBG = `bg-${idx + 1}`;
+
+      map.current.addLayer({
+        id: layerBG,
+        type: "circle",
+        source: userSource,
+        filter: ["==", "id", feature.properties.id],
+        paint: {
+          "circle-color": [
+            "match",
+            ["get", "backgroundColor"],
+            1,
+            COLORS[0],
+            2,
+            COLORS[1],
+            3,
+            COLORS[2],
+            4,
+            COLORS[3],
+            "#fff",
+          ],
+          "circle-opacity": 0.75,
+          "circle-radius": 40,
+        },
+      });
+
+      map.current.loadImage(ICONS[icon], (error, image) => {
+        if (error) throw error;
+        else !map.current.hasImage(icon) && map.current.addImage(icon, image);
 
         map.current.addLayer({
-          id: "user-labels",
+          id: layerIcon,
           type: "symbol",
-          source: "users",
+          source: userSource,
+          filter: ["==", "id", feature.properties.id],
           layout: {
             "text-field": ["get", "name"],
-            "text-radial-offset": 2,
+            "text-radial-offset": 3,
             "text-variable-anchor": ["top"],
-            "icon-image": `icon-${id}`,
-            "icon-size": 0.5,
+            "icon-image": icon,
+            "icon-rotate": 180,
+            "icon-size": 0.03,
             "icon-allow-overlap": true,
             "text-allow-overlap": true,
             "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
-            "text-size": 11,
+            "text-size": 14,
           },
           paint: {
             "text-color": "#307473",
             "text-halo-color": "#fff",
             "text-halo-width": 2,
-            "icon-color": [
-              "match",
-              ["get", "color"],
-              "green",
-              COLORS.green,
-              "red",
-              COLORS.red,
-              "yellow",
-              COLORS.yellow,
-              "blue",
-              COLORS.blue,
-              "#000",
-            ],
           },
         });
-
-        // drawLines(geojson);
-
-        map.current.on("click", "user-labels", (e) => {
-          let id = e.features[0].properties.id;
-          if (id !== idToken) {
-            setSidebarView("neighbor");
-            setActiveToken(id);
-            setTitle(`${e.features[0].properties.name.split(" ")[0]}'s Garden`);
-            map.current.flyTo({
-              center: e.features[0].geometry.coordinates,
-            });
-          }
-        });
-
-        map.current.on("mouseenter", "marker", () => {
-          map.getCanvas().style.cursor = "pointer";
-        });
-
-        map.current.on("mouseleave", "marker", () => {
-          map.getCanvas().style.cursor = "default";
-        });
       });
+
+      // drawLines(geojson);
+
+      map.current.on("click", layerIcon, (e) => {
+        let id = e.features[0].properties.id;
+        if (id !== idToken) {
+          setSidebarView("neighbor");
+          setActiveToken(id);
+          setTitle(`${e.features[0].properties.name.split(" ")[0]}'s Garden`);
+          setIcon(e.features[0].properties.icon);
+          setSidebarHidden(false);
+          map.current.flyTo({
+            center: e.features[0].geometry.coordinates,
+          });
+        }
+      });
+
+      map.current.on("mouseenter", layerIcon, () => {
+        map.current.getCanvas().style.cursor = "pointer";
+      });
+
+      map.current.on("mouseleave", layerIcon, () => {
+        map.current.getCanvas().style.cursor = "default";
+      });
+    });
   };
 
   const loadGardenData = () => {
@@ -232,10 +257,13 @@ const Map = ({
       ZOOM,
       pitch,
     })
-      .on("load", () => loadGardenData())
+      .on("load", () => {
+        loadGardenData();
+        map.current.getCanvas().style.cursor = "default";
+      })
       .addControl(new mapboxgl.NavigationControl(), "top-right")
       .on("movestart", () => setShowReturnButton(true));
-  }, [activeToken]);
+  }, [activeToken, coordinates, pitch]);
 
   return (
     <div>

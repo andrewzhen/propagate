@@ -12,20 +12,28 @@ const Sidebar = ({
   name,
   title,
   setTitle,
+  activeIcon,
+  icon,
+  setIcon,
   shovelActive,
   setShovelActive,
   sidebarView,
   setSidebarView,
   setActiveToken,
+  sidebarHidden,
+  setSidebarHidden,
 }) => {
   return (
     <main>
-      <div className="sidebar">
+      <div className={`sidebar ${sidebarHidden ? "hidden" : ""}`}>
         <Header
           idToken={idToken}
           name={name}
           title={title}
           setTitle={setTitle}
+          activeIcon={activeIcon}
+          icon={icon}
+          setIcon={setIcon}
           backVisible={sidebarView !== "garden"}
           setSidebarView={setSidebarView}
           setActiveToken={setActiveToken}
@@ -68,7 +76,7 @@ const Sidebar = ({
         </div>
 
         {(sidebarView === "garden" || sidebarView === "neighbor") && (
-          <Garden activeToken={activeToken} />
+          <Garden idToken={idToken} activeToken={activeToken} />
         )}
 
         {sidebarView === "addToGarden" && (
@@ -79,6 +87,11 @@ const Sidebar = ({
             setSidebarView={setSidebarView}
           />
         )}
+
+        <div
+          className="resizer"
+          onClick={() => setSidebarHidden(sidebarHidden ? false : true)}
+        ></div>
       </div>
     </main>
   );
